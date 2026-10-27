@@ -1,3 +1,8 @@
+import {
+  getLatencyEvents as getStoredLatencyEvents,
+  saveLatencyEvent,
+} from "@latency-detective/storage";
+
 export interface LatencyEvent {
   service: string;
   operation: string;
@@ -7,16 +12,12 @@ export interface LatencyEvent {
   success: boolean;
 }
 
-const events: LatencyEvent[] = [];
-
-export function collectLatencyEvent(event: LatencyEvent): void {
-  events.push(event);
+export async function collectLatencyEvent(
+  event: LatencyEvent,
+): Promise<void> {
+  await saveLatencyEvent(event);
 }
 
-export function getLatencyEvents(): readonly LatencyEvent[] {
-  return events;
-}
-
-export function clearLatencyEvents(): void {
-  events.length = 0;
+export async function getLatencyEvents(): Promise<LatencyEvent[]> {
+  return getStoredLatencyEvents();
 }

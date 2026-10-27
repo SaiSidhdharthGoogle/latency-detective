@@ -1,7 +1,9 @@
 import { trace, SpanStatusCode } from "@opentelemetry/api";
 import type { LatencyEvent } from "@latency-detective/collector";
 
-export type LatencyEventHandler = (event: LatencyEvent) => void;
+export type LatencyEventHandler = (
+  event: LatencyEvent,
+) => void | Promise<void>;
 
 let eventHandler: LatencyEventHandler | undefined;
 
@@ -54,7 +56,7 @@ export async function measureLatency<T>(
         success,
       };
 
-      eventHandler?.(event);
+      await eventHandler?.(event);
 
       span.end();
     }

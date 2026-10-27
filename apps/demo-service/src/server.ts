@@ -38,9 +38,11 @@ app.get("/slow", async () => {
 });
 
 app.get("/latency-events", async () => {
+  const events = await getLatencyEvents();
+
   return {
-    count: getLatencyEvents().length,
-    events: getLatencyEvents(),
+    count: events.length,
+    events,
   };
 });
 
