@@ -77,6 +77,57 @@ export async function getLatencyEvents(): Promise<LatencyEventRecord[]> {
   }));
 }
 
+
+export async function getLatencyDurations(
+  service?: string,
+  operation?: string,
+): Promise<number[]> {
+  const result = await pool.query<{ duration_ms: number }>(
+    `
+      SELECT duration_ms
+      FROM latency_events
+      WHERE ($1::text IS NULL OR service = $1)
+        AND ($2::text IS NULL OR operation = $2)
+      ORDER BY timestamp ASC
+    `,
+    [service ?? null, operation ?? null],
+  );
+
+  return result.rows.map((row) => row.duration_ms);
+}
+
+
+export interface LatencyOperationSummary {
+  service: string;
+  operation: string;
+  durationMs: number;
+}
+
+export async function getLatencyOperationSummaries(): Promise<
+  LatencyOperationSummary[]
+> {
+  const result = await pool.query<{
+    service: string;
+    operation: string;
+    duration_ms: number;
+  }>(
+    `
+      SELECT
+        service,
+        operation,
+        duration_ms
+      FROM latency_events
+      ORDER BY timestamp ASC
+    `,
+  );
+
+  return result.rows.map((row) => ({
+    service: row.service,
+    operation: row.operation,
+    durationMs: row.duration_ms,
+  }));
+}
+
 export async function closeStorage(): Promise<void> {
   await pool.end();
 }

@@ -1,0 +1,17 @@
+{
+  "name": "@latency-detective/analyzer",
+  "version": "1.0.0",
+  "description": "Latency analytics and bottleneck detection for Latency Detective",
+  "main": "src/index.ts",
+  "types": "src/index.ts",
+  "scripts": {
+    "typecheck": "tsc --noEmit"
+  },
+  "keywords": [],
+  "author": "Sai",
+  "license": "MIT",
+  "type": "module",
+  "dependencies": {
+    "@latency-detective/storage": "workspace:*"
+  }
+}

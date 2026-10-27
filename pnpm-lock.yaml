@@ -188,6 +188,12 @@ importers:
         specifier: ^5.12.7
         version: 5.12.7
 
+  packages/analyzer:
+    dependencies:
+      '@latency-detective/storage':
+        specifier: workspace:*
+        version: link:../storage
+
   packages/collector:
     dependencies:
       '@latency-detective/storage':
