@@ -1,8 +1,13 @@
 import Fastify from "fastify";
+import cors from "@fastify/cors";
 import { analyzeLatency, detectBottlenecks } from "@latency-detective/analyzer";
 
 const app = Fastify({
   logger: true,
+});
+
+await app.register(cors, {
+  origin: "http://localhost:3000",
 });
 
 app.get("/health", async () => {
