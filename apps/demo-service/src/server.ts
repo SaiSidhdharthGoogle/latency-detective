@@ -1,4 +1,5 @@
 import Fastify from "fastify";
+import { measureLatency } from "@latency-detective/instrumentation";
 
 const app = Fastify({
   logger: true,
@@ -12,14 +13,17 @@ app.get("/health", async () => {
 });
 
 app.get("/slow", async () => {
-  await new Promise((resolve) => setTimeout(resolve, 1000));
+  return measureLatency("demo.slow-operation", async () => {
+    await new Promise((resolve) => setTimeout(resolve, 1000));
 
-  return {
-    status: "ok",
-    service: "demo-service",
-    simulatedLatencyMs: 1000,
-  };
+    return {
+      status: "ok",
+      service: "demo-service",
+      simulatedLatencyMs: 1000,
+    };
+  });
 });
+
 const port = Number(process.env.PORT ?? 3000);
 
 try {

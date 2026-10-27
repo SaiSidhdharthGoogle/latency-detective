@@ -178,6 +178,9 @@ importers:
 
   apps/demo-service:
     dependencies:
+      '@latency-detective/instrumentation':
+        specifier: workspace:*
+        version: link:../../packages/instrumentation
       fastify:
         specifier: ^5.12.7
         version: 5.12.7

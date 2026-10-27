@@ -1,14 +1,15 @@
 {
-  "name": "instrumentation",
+  "name": "@latency-detective/instrumentation",
   "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
+  "description": "Latency instrumentation for Latency Detective",
+  "main": "src/index.ts",
+  "types": "src/index.ts",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified && exit 1\""
   },
   "keywords": [],
-  "author": "",
-  "license": "ISC",
+  "author": "Sai",
+  "license": "MIT",
   "type": "module",
   "dependencies": {
     "@opentelemetry/api": "^1.10.0"
