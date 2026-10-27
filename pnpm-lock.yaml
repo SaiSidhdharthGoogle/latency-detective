@@ -178,6 +178,9 @@ importers:
 
   apps/demo-service:
     dependencies:
+      '@latency-detective/collector':
+        specifier: workspace:*
+        version: link:../../packages/collector
       '@latency-detective/instrumentation':
         specifier: workspace:*
         version: link:../../packages/instrumentation
@@ -185,8 +188,13 @@ importers:
         specifier: ^5.12.7
         version: 5.12.7
 
+  packages/collector: {}
+
   packages/instrumentation:
     dependencies:
+      '@latency-detective/collector':
+        specifier: workspace:*
+        version: link:../collector
       '@opentelemetry/api':
         specifier: ^1.10.0
         version: 1.10.0

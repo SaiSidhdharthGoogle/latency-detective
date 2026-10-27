@@ -12,6 +12,7 @@
   "license": "MIT",
   "type": "module",
   "dependencies": {
+    "@latency-detective/collector": "workspace:*",
     "@opentelemetry/api": "^1.10.0"
   }
 }
