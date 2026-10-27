@@ -1,0 +1,19 @@
+{
+  "name": "@latency-detective/api",
+  "version": "1.0.0",
+  "description": "Analytics API for Latency Detective",
+  "main": "src/server.ts",
+  "types": "src/server.ts",
+  "scripts": {
+    "dev": "tsx src/server.ts",
+    "typecheck": "tsc --noEmit"
+  },
+  "keywords": [],
+  "author": "Sai",
+  "license": "MIT",
+  "type": "module",
+  "dependencies": {
+    "@latency-detective/analyzer": "workspace:*",
+    "fastify": "^5.12.7"
+  }
+}

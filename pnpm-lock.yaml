@@ -176,6 +176,15 @@ importers:
         specifier: ^7.0.2
         version: 7.0.2
 
+  apps/api:
+    dependencies:
+      '@latency-detective/analyzer':
+        specifier: workspace:*
+        version: link:../../packages/analyzer
+      fastify:
+        specifier: ^5.12.7
+        version: 5.12.7
+
   apps/demo-service:
     dependencies:
       '@latency-detective/collector':
