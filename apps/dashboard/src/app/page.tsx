@@ -3,7 +3,9 @@
 import { useEffect, useState } from "react";
 import {
   Bar,
+Line,
   BarChart,
+  LineChart,
   CartesianGrid,
   ResponsiveContainer,
   Tooltip,
@@ -28,10 +30,18 @@ interface Bottleneck {
   p95Ms: number;
   count: number;
 }
+interface HistoryPoint {
+  timestamp: string;
+  count: number;
+  averageMs: number;
+  p95Ms: number;
+}
 
 interface AnalyticsResponse {
   statistics: Statistics;
   bottlenecks: Bottleneck[];
+  history: HistoryPoint[];
+
 }
 
 function formatMs(value: number): string {
@@ -40,18 +50,26 @@ function formatMs(value: number): string {
 
 export default function Home() {
   const [analytics, setAnalytics] = useState<AnalyticsResponse | null>(null);
+  const [history, setHistory] = useState<HistoryPoint[]>([]);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     async function loadAnalytics() {
       try {
         const response = await fetch("http://localhost:4000/analytics");
+const historyResponse = await fetch("http://localhost:4000/history");
+if (!historyResponse.ok) {
+  throw new Error(`History API returned ${historyResponse.status}`);
+}
 
         if (!response.ok) {
           throw new Error(`Analytics API returned ${response.status}`);
         }
 
         const data: AnalyticsResponse = await response.json();
+const historyData: { history: HistoryPoint[] } = await historyResponse.json();
+
+setHistory(historyData.history);
         setAnalytics(data);
       } catch (err) {
         setError(
@@ -263,6 +281,47 @@ export default function Home() {
           </table>
         </div>
       </section>
+      <section className="panel">
+        <div className="panel-header">
+          <div>
+            <h2>Historical Latency</h2>
+            <p>Average and P95 latency over time.</p>
+          </div>
+        </div>
+
+        <div className="chart">
+          <ResponsiveContainer width="100%" height="100%">
+            <LineChart data={history}>
+              <CartesianGrid strokeDasharray="3 3" />
+              <XAxis
+                dataKey="timestamp"
+                tickFormatter={(value) =>
+                  new Date(value).toLocaleTimeString()
+                }
+              />
+              <YAxis />
+              <Tooltip
+                labelFormatter={(value) =>
+                  new Date(String(value)).toLocaleString()
+                }
+              />
+              <Line
+                type="monotone"
+                dataKey="averageMs"
+                name="Average"
+                dot={false}
+              />
+              <Line
+                type="monotone"
+                dataKey="p95Ms"
+                name="P95"
+                dot={false}
+              />
+            </LineChart>
+          </ResponsiveContainer>
+        </div>
+      </section>
     </main>
   );
 }
+

@@ -131,3 +131,49 @@ export async function getLatencyOperationSummaries(): Promise<
 export async function closeStorage(): Promise<void> {
   await pool.end();
 }
+
+export interface LatencyTimeBucket {
+  timestamp: string;
+  count: number;
+  averageMs: number;
+  p95Ms: number;
+}
+
+export async function getLatencyTimeBuckets(
+  bucketMinutes = 5,
+  service?: string,
+  operation?: string,
+): Promise<LatencyTimeBucket[]> {
+  const result = await pool.query<{
+    timestamp: Date;
+    count: string;
+    average_ms: number;
+    p95_ms: number;
+  }>(
+    `
+      SELECT
+        date_bin(
+          make_interval(mins => $1::integer),
+          timestamp,
+          TIMESTAMPTZ '1970-01-01'
+        ) AS timestamp,
+        COUNT(*) AS count,
+        AVG(duration_ms) AS average_ms,
+        PERCENTILE_CONT(0.95)
+          WITHIN GROUP (ORDER BY duration_ms) AS p95_ms
+      FROM latency_events
+      WHERE ($2::text IS NULL OR service = $2)
+        AND ($3::text IS NULL OR operation = $3)
+      GROUP BY 1
+      ORDER BY 1 ASC
+    `,
+    [bucketMinutes, service ?? null, operation ?? null],
+  );
+
+  return result.rows.map((row) => ({
+    timestamp: row.timestamp.toISOString(),
+    count: Number(row.count),
+    averageMs: Number(row.average_ms),
+    p95Ms: Number(row.p95_ms),
+  }));
+}

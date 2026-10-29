@@ -1,6 +1,10 @@
 import Fastify from "fastify";
 import cors from "@fastify/cors";
-import { analyzeLatency, detectBottlenecks } from "@latency-detective/analyzer";
+import {
+  analyzeLatency,
+  analyzeLatencyHistory,
+  detectBottlenecks,
+} from "@latency-detective/analyzer";
 
 const app = Fastify({
   logger: true,
@@ -24,6 +28,14 @@ app.get("/analytics", async () => {
   return {
     statistics,
     bottlenecks,
+  };
+});
+
+app.get("/history", async () => {
+  const history = await analyzeLatencyHistory();
+
+  return {
+    history,
   };
 });
 

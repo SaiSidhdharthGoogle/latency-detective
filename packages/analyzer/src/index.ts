@@ -130,3 +130,20 @@ export async function detectBottlenecks(): Promise<Bottleneck[]> {
 
   return bottlenecks.sort((a, b) => b.p95Ms - a.p95Ms);
 }
+
+import { getLatencyTimeBuckets } from "@latency-detective/storage";
+
+export interface LatencyHistoryPoint {
+  timestamp: string;
+  count: number;
+  averageMs: number;
+  p95Ms: number;
+}
+
+export async function analyzeLatencyHistory(
+  bucketMinutes = 5,
+  service?: string,
+  operation?: string,
+): Promise<LatencyHistoryPoint[]> {
+  return getLatencyTimeBuckets(bucketMinutes, service, operation);
+}
